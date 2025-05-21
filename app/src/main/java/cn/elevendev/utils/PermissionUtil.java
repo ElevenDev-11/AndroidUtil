@@ -14,8 +14,8 @@ import androidx.core.content.ContextCompat;
 
 public class PermissionUtil {
     
-    public static final int REQUEST_WRITE_STORAGE = 10011;
-    public static final int REQUEST_CODE_ALL_FILES_PERMISSION = 10012;
+    private static final int REQUEST_WRITE_STORAGE = 10011;
+    private static final int REQUEST_CODE_ALL_FILES_PERMISSION = 10012;
     
     private static PermissionCallback callback;
     

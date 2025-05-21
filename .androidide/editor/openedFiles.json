@@ -1,32 +1,17 @@
 {
   "allFiles": [
     {
-      "file": "/storage/emulated/0/AndroidIDEProjects/Utils/app/src/main/java/cn/elevendev/utils/HttpUtil.java",
-      "selection": {
-        "end": {
-          "column": 0,
-          "index": 0,
-          "line": 0
-        },
-        "start": {
-          "column": 0,
-          "index": 0,
-          "line": 0
-        }
-      }
-    },
-    {
       "file": "/storage/emulated/0/AndroidIDEProjects/Utils/app/build.gradle",
       "selection": {
         "end": {
-          "column": 7,
-          "index": 1175,
-          "line": 54
+          "column": 66,
+          "index": 388,
+          "line": 20
         },
         "start": {
-          "column": 7,
-          "index": 1175,
-          "line": 54
+          "column": 66,
+          "index": 388,
+          "line": 20
         }
       }
     }

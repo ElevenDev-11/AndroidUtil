@@ -1,10 +1,8 @@
 package cn.elevendev.utils;
 
 import android.app.Activity;
-import android.content.res.Resources;
+import android.graphics.Color;
 import android.os.Build;
-import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 
@@ -18,17 +16,14 @@ public class NavigationBarUtil {
      */
     public static int getNavigationBarHeight(Activity activity) {
         Window window = activity.getWindow();
-        Resources resources = activity.getResources();
-        int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
-        int systemUiVisibility = window.getDecorView().getSystemUiVisibility();
-        int height = resources.getDimensionPixelSize(resourceId);
-        boolean isNavBarHidden = (systemUiVisibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) != 0;
-
-        if (isNavBarHidden || height < 60) {
-            return 0;
+        if (window != null) {
+            View viewNavigation = window.getDecorView().findViewById(android.R.id.navigationBarBackground);
+            if (viewNavigation != null) {
+                return viewNavigation.getMeasuredHeight();
+            }
         }
-
-        return height;
+        
+        return 0;
     }
     
     /**
@@ -38,36 +33,72 @@ public class NavigationBarUtil {
      * @return 如果导航栏可见返回 true，否则返回 false
      */
     public static boolean isNavigationBarVisible(Activity activity) {
-        int val = Settings.Global.getInt(activity.getContentResolver(), getDeviceInfo(), 0);
-        boolean isNavBarShown = (val == 0);
-        
-        int navBarHeight = getNavigationBarHeight(activity);
-        if (navBarHeight < 60) {
-            return false;
-        }
-
-        return isNavBarShown;
+        return getNavigationBarHeight(activity) != 0;
+    }
+    
+    /**
+     * 隐藏导航栏
+     *
+     * @param activity 当前 Activity
+     */
+    public static void hideNavigationBar(Activity activity) {
+        View decorView = activity.getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+        );
     }
 
     /**
-     * 根据设备品牌返回判断导航栏是否显示的系统设置字段名
+     * 显示导航栏
      *
-     * @return 系统设置中用于判断导航栏显示状态的键名
+     * @param activity 当前 Activity
      */
-    private static String getDeviceInfo() {
-        String brand = Build.BRAND;
-        if (TextUtils.isEmpty(brand)) return "navigationbar_is_min";
+    public static void showNavigationBar(Activity activity) {
+        View decorView = activity.getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+    }
 
-        switch (brand.toLowerCase()) {
-            case "xiaomi":
-                return "force_fsg_nav_bar";
-            case "vivo":
-            case "oppo":
-            case "oneplus":
-                return "navigation_gesture_on";
-            case "huawei":
-            default:
-                return "navigationbar_is_min";
+    /**
+     * 设置导航栏颜色
+     *
+     * @param activity 当前 Activity
+     * @param color 颜色字符串
+     */
+    public static void setNavigationBarColor(Activity activity, String color) {
+        setNavigationBarColor(activity, Color.parseColor(color));
+    }
+    
+    /**
+     * 设置导航栏颜色
+     *
+     * @param activity 当前 Activity
+     * @param color 颜色值（十六进制 int 类型，例如 0xFFFFFFFF）
+     */
+    public static void setNavigationBarColor(Activity activity, int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.getWindow().setNavigationBarColor(color);
         }
     }
+    
+    /**
+     * 设置导航栏图标为深色或浅色
+     *
+     * @param activity 当前 Activity
+     * @param dark 是否深色图标
+     */
+    public static void setNavigationBarIconDark(Activity activity, boolean dark) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            View decorView = activity.getWindow().getDecorView();
+            int flags = decorView.getSystemUiVisibility();
+            if (dark) {
+                flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            } else {
+                flags &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            }
+            decorView.setSystemUiVisibility(flags);
+        }
+    }
+    
 }
